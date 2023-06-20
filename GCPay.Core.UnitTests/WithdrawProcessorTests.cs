@@ -76,7 +76,7 @@ public class WithdrawProcessorTests
         _ = fakePaymentClient.Received(1)
             .SaveWithdrawFormThirdPartyOrderNoAsync(
                 Arg.Is(applySettings.FormId),
-                Arg.Is(applySettings.FormId.ToString()));
+                Arg.Is("P0619175112961319341e"));
         Assert.NotNull(applyInfo);
         Assert.Equal(applySettings, applyInfo.Settings);
     }
@@ -143,7 +143,7 @@ public class WithdrawProcessorTests
         _ = fakePaymentClient.Received(1)
             .SaveWithdrawFormThirdPartyOrderNoAsync(
                 Arg.Is(applySettings.FormId),
-                Arg.Is(applySettings.FormId.ToString()));
+                Arg.Is("P06201502505676501c2c"));
         Assert.NotNull(applyInfo);
         Assert.Equal(applySettings, applyInfo.Settings);
     }
@@ -210,7 +210,7 @@ public class WithdrawProcessorTests
         _ = fakePaymentClient.Received(1)
             .SaveWithdrawFormThirdPartyOrderNoAsync(
                 Arg.Is(applySettings.FormId),
-                Arg.Is(applySettings.FormId.ToString()));
+                Arg.Is("P06201506293584383ad8"));
         Assert.NotNull(applyInfo);
         Assert.Equal(applySettings, applyInfo.Settings);
     }
