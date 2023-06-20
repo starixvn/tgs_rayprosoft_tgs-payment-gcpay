@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33502.453
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.Payment.GCPay", "Tgs.Payment.GCPay\Tgs.Payment.GCPay.csproj", "{74EF8A14-8BDB-4551-A681-0622F6163EC2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B2559C16-C84F-451D-B307-01E616EDCF65}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		CodeMaid.config = CodeMaid.config
+		nuget.config = nuget.config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCPay.Core", "GCPay.Core\GCPay.Core.csproj", "{F8F21A06-9F32-415E-83C9-18635C0DC29E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCPay.Client", "GCPay.Client\GCPay.Client.csproj", "{44B68F3C-7E13-41DE-BE09-BEDEF36C5F5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCPay.Core.UnitTests", "GCPay.Core.UnitTests\GCPay.Core.UnitTests.csproj", "{A484A4A7-C172-4780-BA1D-87C172C95AFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.Payment.GCPay.IntegrationTests", "Tgs.Payment.GCPay.IntegrationTests\Tgs.Payment.GCPay.IntegrationTests.csproj", "{884AD547-1355-4086-94FC-F9019F6CEB12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCPayTest", "GCPayTest\GCPayTest.csproj", "{0FF4582C-CE6B-4659-9CB4-3EC23D18E384}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{74EF8A14-8BDB-4551-A681-0622F6163EC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74EF8A14-8BDB-4551-A681-0622F6163EC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74EF8A14-8BDB-4551-A681-0622F6163EC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74EF8A14-8BDB-4551-A681-0622F6163EC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8F21A06-9F32-415E-83C9-18635C0DC29E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8F21A06-9F32-415E-83C9-18635C0DC29E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8F21A06-9F32-415E-83C9-18635C0DC29E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8F21A06-9F32-415E-83C9-18635C0DC29E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44B68F3C-7E13-41DE-BE09-BEDEF36C5F5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44B68F3C-7E13-41DE-BE09-BEDEF36C5F5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44B68F3C-7E13-41DE-BE09-BEDEF36C5F5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44B68F3C-7E13-41DE-BE09-BEDEF36C5F5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A484A4A7-C172-4780-BA1D-87C172C95AFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A484A4A7-C172-4780-BA1D-87C172C95AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A484A4A7-C172-4780-BA1D-87C172C95AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A484A4A7-C172-4780-BA1D-87C172C95AFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{884AD547-1355-4086-94FC-F9019F6CEB12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{884AD547-1355-4086-94FC-F9019F6CEB12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{884AD547-1355-4086-94FC-F9019F6CEB12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{884AD547-1355-4086-94FC-F9019F6CEB12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FF4582C-CE6B-4659-9CB4-3EC23D18E384}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FF4582C-CE6B-4659-9CB4-3EC23D18E384}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FF4582C-CE6B-4659-9CB4-3EC23D18E384}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FF4582C-CE6B-4659-9CB4-3EC23D18E384}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {27BDC4FE-CA52-4B01-A92D-5601EA2C9319}
+	EndGlobalSection
+EndGlobal
