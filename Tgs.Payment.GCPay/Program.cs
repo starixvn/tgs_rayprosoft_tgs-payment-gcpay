@@ -51,16 +51,16 @@ builder.Services
             builder.Configuration.GetConnectionString("Nats")!)
         .AddProcessor(
             ProcessorTypes.DepositProcessorType,
-            "tgs.payment.gcpay.deposit",
-            "tgs.payment.gcpay.deposit")
+            $"tgs.payment.{builder.Configuration.GetValue<string>("GCPay:PaymentCode")!.ToLower()}.deposit",
+            $"tgs.payment.{builder.Configuration.GetValue<string>("GCPay:PaymentCode")!.ToLower()}.deposit")
         .AddProcessor(
             ProcessorTypes.WithdrawProcessorType,
-            "tgs.payment.gcpay.withdraw",
-            "tgs.payment.gcpay.withdraw")
+            $"tgs.payment.{builder.Configuration.GetValue<string>("GCPay:PaymentCode")!.ToLower()}.withdraw",
+            $"tgs.payment.{builder.Configuration.GetValue<string>("GCPay:PaymentCode")!.ToLower()}.withdraw")
         .AddHandler(
             ProcessorTypes.DepositTimeoutCheckHandlerType,
-            $"tgs.payment.gcpay.deposit.schedule.reject",
-            $"tgs.payment.gcpay.deposit.schedule.reject"))
+            $"tgs.payment.{builder.Configuration.GetValue<string>("GCPay:PaymentCode")!.ToLower()}.deposit.schedule.reject",
+            $"tgs.payment.{builder.Configuration.GetValue<string>("GCPay:PaymentCode")!.ToLower()}.deposit.schedule.reject"))
     .AddNatsGlobPatternExchange("*");
 
 builder.Services

@@ -53,7 +53,7 @@ internal class DepositProcessor : IMessageProcessor
                 depositResponse.ThirdPartyOrderNo));
 
         await _paymentClient.ScheduleAsync(
-            "tgs.payment.gcpay.deposit.schedule.reject",
+            $"tgs.payment.{_options.PaymentCode.ToLower()}.deposit.schedule.reject",
             settings.FormId,
             DateTime.UtcNow.AddMinutes(31D),
             cancellationToken).ConfigureAwait(false);

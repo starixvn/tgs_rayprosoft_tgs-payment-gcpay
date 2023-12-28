@@ -2,6 +2,7 @@
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using RichardSzalay.MockHttp;
 using Tgs.Payment.Clients;
@@ -32,11 +33,20 @@ public class DepositTimeoutCheckHandlerTests
 
         var fakePaymentClient = Substitute.For<IPaymentClient>();
 
+        var options = new GCPayOptions
+        {
+            CallbackBaseUrl = new Uri("https://dev-payment.rpgp.cc/gcpay"),
+            PaymentApiUrl = new Uri("https://etpay888.com"),
+            PaymentServiceBaseUrl = new Uri("http://localhost:5541"),
+            PaymentCode = "GCPay"
+        };
+
         var sut = new DepositTimeoutCheckHandler(
             fakePaymentServiceClient,
             fakeGCPayClient,
             fakePaymentClient,
-            NullLogger<DepositTimeoutCheckHandler>.Instance);
+            NullLogger<DepositTimeoutCheckHandler>.Instance,
+            new OptionsWrapper<GCPayOptions>(options));
 
         var formId = Guid.Parse("997a590b2b3b4f2e937439f7efa32670");
 

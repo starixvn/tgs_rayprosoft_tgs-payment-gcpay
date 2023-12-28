@@ -56,6 +56,47 @@ deploy-dev:
       artifacts: true
   only:
     - main
+  script:
+    - deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
+    - |
+      cat << EOF | name_template="tgs-hpay" deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
+        {
+          "podServiceName": "Payment-HPay",
+          "podEnv": [
+            {
+              "name": "ConnectionStrings__Nats",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "nats"
+                }
+              }
+            },
+            {
+              "name": "GCPay__PaymentApiUrl",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "payment-hpay-paymentApiUrl"
+                }
+              }
+            },
+            {
+              "name": "GCPay__CallbackBaseUrl",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "payment-hpay-callback"
+                }
+              }
+            },
+            {
+              "name": "GCPay__PaymentCode",
+              "value": "HPay"
+            }
+          ]
+        }
+      EOF
   when: on_success
 
 deploy-staging:
@@ -72,6 +113,47 @@ deploy-staging:
       artifacts: true
   only:
     - main
+  script:
+    - deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
+    - |
+      cat << EOF | name_template="tgs-hpay" deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
+        {
+          "podServiceName": "Payment-HPay",
+          "podEnv": [
+            {
+              "name": "ConnectionStrings__Nats",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "nats"
+                }
+              }
+            },
+            {
+              "name": "GCPay__PaymentApiUrl",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "payment-hpay-paymentApiUrl"
+                }
+              }
+            },
+            {
+              "name": "GCPay__CallbackBaseUrl",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "payment-hpay-callback"
+                }
+              }
+            },
+            {
+              "name": "GCPay__PaymentCode",
+              "value": "HPay"
+            }
+          ]
+        }
+      EOF
   when: manual
 
 deploy-prod:
@@ -88,4 +170,45 @@ deploy-prod:
       artifacts: true
   only:
     - main
+  script:
+    - deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
+    - |
+      cat << EOF | name_template="tgs-hpay" deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
+        {
+          "podServiceName": "Payment-HPay",
+          "podEnv": [
+            {
+              "name": "ConnectionStrings__Nats",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "nats"
+                }
+              }
+            },
+            {
+              "name": "GCPay__PaymentApiUrl",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "payment-hpay-paymentApiUrl"
+                }
+              }
+            },
+            {
+              "name": "GCPay__CallbackBaseUrl",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "payment-hpay-callback"
+                }
+              }
+            },
+            {
+              "name": "GCPay__PaymentCode",
+              "value": "HPay"
+            }
+          ]
+        }
+      EOF
   when: manual

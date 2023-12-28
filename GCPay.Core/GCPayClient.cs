@@ -44,7 +44,7 @@ public class GCPayClient
 
         var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-        _logger.LogInformation("GCPayClient Deposit Body:{body}", body);
+        _logger.LogInformation("PayClient Deposit Body:{body}", body);
 
         var node = JsonNode.Parse(body);
         if (node is null)
@@ -92,7 +92,7 @@ public class GCPayClient
 
         var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-        _logger.LogInformation("GCPayClient Withdraw Response Body:{body}", body);
+        _logger.LogInformation("PayClient Withdraw Response Body:{body}", body);
 
         var node = JsonNode.Parse(body);
 
@@ -131,7 +131,7 @@ public class GCPayClient
 
         var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-        _logger.LogInformation("GCPayClient Query Deposit Form Body:{body}", body);
+        _logger.LogInformation("PayClient Query Deposit Form Body:{body}", body);
 
         var node = JsonNode.Parse(body);
         if (node is null)
