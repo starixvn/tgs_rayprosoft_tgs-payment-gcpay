@@ -22,6 +22,8 @@ build-code:
 
 unit-test:
   extends: .unit-test-template
+  variables:
+    Framework: net7.0
 
 push-nuget:
   extends: .push-nuget-template
