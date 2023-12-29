@@ -33,7 +33,8 @@ public class DepositProcessorTests
         {
             CallbackBaseUrl = new Uri("https://dev-payment.rpgp.cc/gcpay"),
             PaymentApiUrl = new Uri("https://etpay888.com"),
-            PaymentServiceBaseUrl = new Uri("http://localhost:5541")
+            PaymentServiceBaseUrl = new Uri("http://localhost:5541"),
+            PaymentCode = "GCPay"
         };
 
         var sut = new DepositProcessor(

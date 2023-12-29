@@ -7,4 +7,6 @@ public class GCPayOptions
 	public required Uri PaymentApiUrl { get; set; }
 
 	public required Uri PaymentServiceBaseUrl { get; set; }
+
+    public required string PaymentCode { get; set; }
 }
