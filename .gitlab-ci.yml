@@ -99,6 +99,45 @@ deploy-dev:
           ]
         }
       EOF
+    - |
+      cat << EOF | name_template="tgs-ezpay" deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
+        {
+          "podServiceName": "Payment-EzPay",
+          "podEnv": [
+            {
+              "name": "ConnectionStrings__Nats",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "nats"
+                }
+              }
+            },
+            {
+              "name": "GCPay__PaymentApiUrl",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "payment-ezpay-paymentApiUrl"
+                }
+              }
+            },
+            {
+              "name": "GCPay__CallbackBaseUrl",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "payment-ezpay-callback"
+                }
+              }
+            },
+            {
+              "name": "GCPay__PaymentCode",
+              "value": "EzPay"
+            }
+          ]
+        }
+      EOF  
   when: on_success
 
 deploy-staging:
@@ -156,6 +195,45 @@ deploy-staging:
           ]
         }
       EOF
+    - |
+      cat << EOF | name_template="tgs-ezpay" deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
+        {
+          "podServiceName": "Payment-EzPay",
+          "podEnv": [
+            {
+              "name": "ConnectionStrings__Nats",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "nats"
+                }
+              }
+            },
+            {
+              "name": "GCPay__PaymentApiUrl",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "payment-ezpay-paymentApiUrl"
+                }
+              }
+            },
+            {
+              "name": "GCPay__CallbackBaseUrl",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "payment-ezpay-callback"
+                }
+              }
+            },
+            {
+              "name": "GCPay__PaymentCode",
+              "value": "EzPay"
+            }
+          ]
+        }
+      EOF  
   when: manual
 
 deploy-prod:
@@ -213,4 +291,43 @@ deploy-prod:
           ]
         }
       EOF
+    - |
+      cat << EOF | name_template="tgs-ezpay" deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
+        {
+          "podServiceName": "Payment-EzPay",
+          "podEnv": [
+            {
+              "name": "ConnectionStrings__Nats",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "nats"
+                }
+              }
+            },
+            {
+              "name": "GCPay__PaymentApiUrl",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "payment-ezpay-paymentApiUrl"
+                }
+              }
+            },
+            {
+              "name": "GCPay__CallbackBaseUrl",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "tgs-connections",
+                  "key": "payment-ezpay-callback"
+                }
+              }
+            },
+            {
+              "name": "GCPay__PaymentCode",
+              "value": "EzPay"
+            }
+          ]
+        }
+      EOF  
   when: manual
