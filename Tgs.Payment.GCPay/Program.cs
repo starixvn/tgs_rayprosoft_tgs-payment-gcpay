@@ -5,6 +5,7 @@ using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Tgs.MessageQueue.Nats.Serializers;
 using Tgs.Payment.GCPay;
 using Tgs.Payment.GCPay.MessageQueue;
 
@@ -46,6 +47,12 @@ builder.Services
 
             http.BaseAddress = options.PaymentServiceBaseUrl;
         }))
+    .AddKeyedSingleton("Nats",
+    (sp, _) => new NatsConnection(NatsOpts.Default with
+    {
+        Url = builder.Configuration.GetConnectionString("Nats")!,
+        SerializerRegistry = TgsNatsSerializerRegistration.Default
+    }))
     .AddMessageQueue()
     .AddNatsMessageQueue(natsConfig => natsConfig
         .ConfigureResolveConnection(sp => sp.GetRequiredKeyedService<NatsConnection>("Nats"))
