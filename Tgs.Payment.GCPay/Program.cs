@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.Options;
+using NATS.Client.Core;
 using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -47,8 +48,7 @@ builder.Services
         }))
     .AddMessageQueue()
     .AddNatsMessageQueue(natsConfig => natsConfig
-        .ConfigQueueOptions((options, _) => options.Url =
-            builder.Configuration.GetConnectionString("Nats")!)
+        .ConfigureResolveConnection(sp => sp.GetRequiredKeyedService<NatsConnection>("Nats"))
         .AddProcessor(
             ProcessorTypes.DepositProcessorType,
             $"tgs.payment.{builder.Configuration.GetValue<string>("GCPay:PaymentCode")!.ToLower()}.deposit",
@@ -60,7 +60,11 @@ builder.Services
         .AddHandler(
             ProcessorTypes.DepositTimeoutCheckHandlerType,
             $"tgs.payment.{builder.Configuration.GetValue<string>("GCPay:PaymentCode")!.ToLower()}.deposit.schedule.reject",
-            $"tgs.payment.{builder.Configuration.GetValue<string>("GCPay:PaymentCode")!.ToLower()}.deposit.schedule.reject"))
+            $"tgs.payment.{builder.Configuration.GetValue<string>("GCPay:PaymentCode")!.ToLower()}.deposit.schedule.reject")
+        .AddProcessor(
+            ProcessorTypes.GetBalanceProcessorType,
+            $"tgs.payment.{builder.Configuration.GetValue<string>("GCPay:PaymentCode")!.ToLower()}.balance",
+            $"tgs.payment.{builder.Configuration.GetValue<string>("GCPay:PaymentCode")!.ToLower()}.balance"))
     .AddNatsGlobPatternExchange("*");
 
 builder.Services
@@ -79,6 +83,7 @@ builder.Services
         .SetResourceBuilder(ResourceBuilder.CreateDefault()
             .AddEnvironmentVariableDetector())
         .AddSource("Tgs.*")
+        .AddSource("Valhalla.*")
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddProfileViewExporter()
@@ -88,11 +93,12 @@ builder.Services
         .AddAspNetCoreInstrumentation()
         .AddOtlpExporter())
     .Services
-    .Configure<AspNetCoreInstrumentationOptions>(options => options.Filter =
+    .Configure<AspNetCoreTraceInstrumentationOptions>(options => options.Filter =
         httpContext => !httpContext.Request.Path.HasValue
             || !httpContext.Request.Path.StartsWithSegments("/swagger")
             && !httpContext.Request.Path.StartsWithSegments("/healthz")
             && !httpContext.Request.Path.StartsWithSegments("/metrics")
+            && !httpContext.Request.Path.StartsWithSegments("/profiler/")
             && !new[] { "html", "ico", "png", "jpg" }.Any(
                 ext => httpContext.Request.Path.Value.EndsWith($".{ext}")));
 

@@ -72,9 +72,12 @@ public class DepositProcessorTests
 				"""));
 
         // Act
-        var actual = await sut.HandleAsync(request.ToByteArray());
-        var response = DepositResponse.Parser.ParseFrom(actual.Span);
-        var applyInfo = JsonSerializer.Deserialize<GCPayDepositApplyInfo>(response.Result, GCPayUtility.SerializerOptions);
+        var actual = await sut.HandleAsync(
+            "tgs.payment.gcpay.deposit",
+            request,
+            null);
+
+        var applyInfo = JsonSerializer.Deserialize<GCPayDepositApplyInfo>(actual.Result, GCPayUtility.SerializerOptions);
 
         // Assert
         _ = fakePaymentClient.Received(1)

@@ -1,14 +1,15 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Tgs.MessageQueue;
 using Tgs.Payment.Clients;
 using Tgs.Payment.GCPay.Client;
 using Tgs.Payment.Protos;
+using Valhalla.MessageQueue;
 
 namespace Tgs.Payment.GCPay.MessageQueue;
 
-internal class DepositTimeoutCheckHandler : IMessageHandler
+internal class DepositTimeoutCheckHandler
+    : IMessageHandler<ScheduleRequest>
 {
     private readonly IPaymentServiceClient _paymentServiceClient;
     private readonly GCPayClient _gCPayClient;
@@ -30,17 +31,19 @@ internal class DepositTimeoutCheckHandler : IMessageHandler
         _options = optionsAccessor.Value;
     }
 
-    public async ValueTask HandleAsync(ReadOnlyMemory<byte> data, CancellationToken cancellationToken = default)
+    public async ValueTask HandleAsync(
+        string subject,
+        ScheduleRequest data,
+        IEnumerable<MessageHeaderValue>? headerValues,
+        CancellationToken cancellationToken = default)
     {
-        var request = ScheduleRequest.Parser.ParseFrom(data.Span);
-
         _logger.LogInformation(
             "Deposit Schedule Handler Receive request Form Id:{request.FormId.ToGuid()}, "
                 + "Schedule Time:{request.ScheduleTime.ToDateTime():yyyy/MM/dd HH:mm:ss}",
-            request.FormId.ToGuid(),
-            request.ScheduleTime.ToDateTime());
+            data.FormId.ToGuid(),
+            data.ScheduleTime.ToDateTime());
 
-        var formId = request.FormId.ToGuid();
+        var formId = data.FormId.ToGuid();
 
         try
         {
@@ -50,7 +53,7 @@ internal class DepositTimeoutCheckHandler : IMessageHandler
 
             if (depositForm is null)
             {
-                _logger.LogWarning("Deposit Form {request.FormId.ToGuid()} not found.", request.FormId.ToGuid());
+                _logger.LogWarning("Deposit Form {request.FormId.ToGuid()} not found.", data.FormId.ToGuid());
                 return;
             }
 

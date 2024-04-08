@@ -1,36 +1,31 @@
 ﻿using System.Text.Json;
-using Google.Protobuf;
 using Microsoft.Extensions.Options;
-using Tgs.MessageQueue;
 using Tgs.Payment.Clients;
 using Tgs.Payment.GCPay.Client;
 using Tgs.Payment.Protos;
+using Valhalla.MessageQueue;
 
 namespace Tgs.Payment.GCPay.MessageQueue;
 
-internal class WithdrawProcessor : IMessageProcessor
+internal class WithdrawProcessor(
+    GCPayClient gCPayClient,
+    IPaymentClient paymentClient,
+    IOptions<GCPayOptions> optionsAccessor) : IMessageProcessor<WithdrawRequest, WithdrawResponse>
 {
-    private readonly GCPayClient _gCPayClient;
-    private readonly IPaymentClient _paymentClient;
-    private readonly GCPayOptions _options;
+    private readonly GCPayClient _gCPayClient = gCPayClient ?? throw new ArgumentNullException(nameof(gCPayClient));
+    private readonly IPaymentClient _paymentClient = paymentClient ?? throw new ArgumentNullException(nameof(paymentClient));
+    private readonly GCPayOptions _options = optionsAccessor.Value;
 
-    public WithdrawProcessor(
-        GCPayClient gCPayClient,
-        IPaymentClient paymentClient,
-        IOptions<GCPayOptions> optionsAccessor)
+    public async ValueTask<WithdrawResponse> HandleAsync(
+        string subject,
+        WithdrawRequest data,
+        IEnumerable<MessageHeaderValue>? headerValues,
+        CancellationToken cancellationToken = default)
     {
-        _gCPayClient = gCPayClient ?? throw new ArgumentNullException(nameof(gCPayClient));
-        _paymentClient = paymentClient ?? throw new ArgumentNullException(nameof(paymentClient));
-        _options = optionsAccessor.Value;
-    }
-
-    public async ValueTask<ReadOnlyMemory<byte>> HandleAsync(ReadOnlyMemory<byte> data, CancellationToken cancellationToken = default)
-    {
-        var request = WithdrawRequest.Parser.ParseFrom(data.Span);
-        var settings = JsonSerializer.Deserialize<GCPayWithdrawSettings>(request.ApplyInfo, GCPayUtility.SerializerOptions)!;
+        var settings = JsonSerializer.Deserialize<GCPayWithdrawSettings>(data.ApplyInfo, GCPayUtility.SerializerOptions)!;
 
         var order = new GCPayClientWithdrawOrder(
-            decimal.Parse(request.Amount),
+            decimal.Parse(data.Amount),
             settings.FormId,
             settings.BankName,
             settings.AccountName,
@@ -52,11 +47,9 @@ internal class WithdrawProcessor : IMessageProcessor
             withdrawResponse.ThirdPartyOrderNo,
             cancellationToken);
 
-        var msg = new WithdrawResponse
+        return new WithdrawResponse
         {
             Result = JsonSerializer.Serialize(applyInfo, GCPayUtility.SerializerOptions)
         };
-
-        return msg.ToByteArray();
     }
 }
