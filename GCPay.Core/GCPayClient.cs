@@ -55,12 +55,16 @@ public class GCPayClient
 
         var data = node["data"]!;
 
+        var qrUrl = data["qr_url"] == null 
+            ? "https://localhost" 
+            : data["qr_url"]!.ToString();
+
         return new GCPayClientDepositResponse(
             Amount: order.Amount,
             FormId: Guid.Parse(data["order_id"]!.ToString()),
             ThirdPartyOrderNo: data["transaction_id"]!.ToString(),
             RedirectUrl: new Uri(data["view_url"]!.ToString()),
-            QrCodeUrl: new Uri(data["qr_url"]!.ToString()));
+            QrCodeUrl: new Uri(qrUrl));
     }
 
     public async ValueTask<GCPayClientWithdrawResponse> WithdrawAsync(
