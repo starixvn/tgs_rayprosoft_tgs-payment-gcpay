@@ -69,9 +69,12 @@ public class WithdrawProcessorTests
 				"""));
 
         // Act
-        var actual = await sut.HandleAsync(request.ToByteArray());
-        var response = WithdrawResponse.Parser.ParseFrom(actual.Span);
-        var applyInfo = JsonSerializer.Deserialize<GCPayWithdrawApplyInfo>(response.Result, GCPayUtility.SerializerOptions);
+        var actual = await sut.HandleAsync(
+            "tgs.payment.gcpay.withdraw",
+            request,
+            null);
+
+        var applyInfo = JsonSerializer.Deserialize<GCPayWithdrawApplyInfo>(actual.Result, GCPayUtility.SerializerOptions);
 
         // Assert
         _ = fakePaymentClient.Received(1)
@@ -137,9 +140,12 @@ public class WithdrawProcessorTests
 				"""));
 
         // Act
-        var actual = await sut.HandleAsync(request.ToByteArray());
-        var response = WithdrawResponse.Parser.ParseFrom(actual.Span);
-        var applyInfo = JsonSerializer.Deserialize<GCPayWithdrawApplyInfo>(response.Result, GCPayUtility.SerializerOptions);
+        var actual = await sut.HandleAsync(
+            "tgs.payment.gcpay.withdraw",
+            request,
+            null);
+
+        var applyInfo = JsonSerializer.Deserialize<GCPayWithdrawApplyInfo>(actual.Result, GCPayUtility.SerializerOptions);
 
         // Assert
         _ = fakePaymentClient.Received(1)
@@ -205,9 +211,12 @@ public class WithdrawProcessorTests
 				"""));
 
         // Act
-        var actual = await sut.HandleAsync(request.ToByteArray());
-        var response = WithdrawResponse.Parser.ParseFrom(actual.Span);
-        var applyInfo = JsonSerializer.Deserialize<GCPayWithdrawApplyInfo>(response.Result, GCPayUtility.SerializerOptions);
+        var actual = await sut.HandleAsync(
+            "tgs.payment.gcpay.withdraw",
+            request,
+            null);
+
+        var applyInfo = JsonSerializer.Deserialize<GCPayWithdrawApplyInfo>(actual.Result, GCPayUtility.SerializerOptions);
 
         // Assert
         _ = fakePaymentClient.Received(1)

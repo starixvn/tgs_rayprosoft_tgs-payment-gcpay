@@ -27,18 +27,18 @@ var paymentClient = app.Services.GetRequiredService<IPaymentClient>();
 
 
 //PAYMAYA收款只支援PAYMAYA 通道编号 2643
-var depositSettings = new GCPayDepositSettings(
-    customerId,
-    key,
-    Guid.NewGuid(),
-    PayChannelId: "2643");
+//var depositSettings = new GCPayDepositSettings(
+//    customerId,
+//    key,
+//    Guid.NewGuid(),
+//    PayChannelId: "2643");
 
-var depositReturn = await paymentClient.DepositAsync(
-    "tgs.payment.gcpay.deposit",
-    10000M,
-    JsonSerializer.Serialize(depositSettings, GCPayUtility.SerializerOptions)).ConfigureAwait(false);
+//var depositReturn = await paymentClient.DepositAsync(
+//    "tgs.payment.gcpay.deposit",
+//    10000M,
+//    JsonSerializer.Serialize(depositSettings, GCPayUtility.SerializerOptions)).ConfigureAwait(false);
 
-logger.LogInformation("DepositReturn: {depositReturn}", depositReturn);
+//logger.LogInformation("DepositReturn: {depositReturn}", depositReturn);
 
 
 //提款支援PAYMAYA / GCASH / 銀行
@@ -89,3 +89,6 @@ logger.LogInformation("DepositReturn: {depositReturn}", depositReturn);
 //    JsonSerializer.Serialize(withdrawSettings, GCPayUtility.SerializerOptions)).ConfigureAwait(false);
 
 //logger.LogInformation("{withdrawReturn}", withdrawReturn);
+
+
+//餘額查詢

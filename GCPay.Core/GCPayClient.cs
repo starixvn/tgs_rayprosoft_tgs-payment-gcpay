@@ -1,6 +1,8 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
+using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
 
 namespace Tgs.Payment.GCPay;
 
@@ -55,8 +57,8 @@ public class GCPayClient
 
         var data = node["data"]!;
 
-        var qrUrl = data["qr_url"] == null 
-            ? "https://localhost" 
+        var qrUrl = data["qr_url"] == null
+            ? "https://localhost"
             : data["qr_url"]!.ToString();
 
         return new GCPayClientDepositResponse(
@@ -98,10 +100,7 @@ public class GCPayClient
 
         _logger.LogInformation("PayClient Withdraw Response Body:{body}", body);
 
-        var node = JsonNode.Parse(body);
-
-        if (node is null)
-            throw new ApiFailException("Withdraw response can't read.");
+        var node = JsonNode.Parse(body) ?? throw new ApiFailException("Withdraw response can't read.");
 
         if (node["code"]!.GetValue<int>() != 0)
             throw new ApiFailException(node["message"]!.ToString());
@@ -137,9 +136,7 @@ public class GCPayClient
 
         _logger.LogInformation("PayClient Query Deposit Form Body:{body}", body);
 
-        var node = JsonNode.Parse(body);
-        if (node is null)
-            throw new ApiFailException("Deposit response can't read.");
+        var node = JsonNode.Parse(body) ?? throw new ApiFailException("Deposit response can't read.");
 
         if (node["code"]!.GetValue<int>() != 0)
             throw new ApiFailException(node["message"]!.ToString());
@@ -148,5 +145,37 @@ public class GCPayClient
 
         return new GCPayClientQueryDepositResponse(
             Status: data["status"]!.GetValue<int>());
+    }
+
+    public async ValueTask<decimal> QueryBalanceAsync(string customerId, string key, CancellationToken cancellationToken = default)
+    {
+        var dict = new Dictionary<string, string?>
+        {
+            ["pay_customer_id"] = customerId,
+            ["pay_apply_date"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
+        };
+
+        var sign = _hasher.ComputeHash(key, dict);
+
+        dict["pay_md5_sign"] = sign;
+
+        var response = await _httpClient
+            .PostAsJsonAsync("/api/payments/balance", dict, cancellationToken)
+            .ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+
+        _logger.LogInformation("PayClient Query Balance response Body:{bodyJson}", body);
+
+        var node = JsonNode.Parse(body) ?? throw new ApiFailException("Query Balance response can't read.");
+
+        if (node["code"]!.GetValue<int>() != 0)
+            throw new ApiFailException(node["message"]!.ToString());
+
+        var data = node["data"]!;
+
+        return decimal.Parse(data["balance"]!.GetValue<string>());
     }
 }

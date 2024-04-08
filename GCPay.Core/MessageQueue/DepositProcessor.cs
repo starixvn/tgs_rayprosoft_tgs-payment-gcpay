@@ -1,42 +1,37 @@
 ﻿using System.Text.Json;
-using Google.Protobuf;
 using Microsoft.Extensions.Options;
-using Tgs.MessageQueue;
 using Tgs.Payment.Clients;
 using Tgs.Payment.GCPay.Client;
 using Tgs.Payment.Protos;
+using Valhalla.MessageQueue;
 
 namespace Tgs.Payment.GCPay.MessageQueue;
 
-internal class DepositProcessor : IMessageProcessor
+internal class DepositProcessor(
+    GCPayClient gCPayClient,
+    IPaymentClient paymentClient,
+    IOptions<GCPayOptions> optionsAccessor)
+    : IMessageProcessor<DepositRequest, DepositResponse>
 {
-    private readonly GCPayClient _gCPayClient;
-    private readonly IPaymentClient _paymentClient;
-    private readonly GCPayOptions _options;
+    private readonly GCPayClient _gCPayClient = gCPayClient ?? throw new ArgumentNullException(nameof(gCPayClient));
+    private readonly IPaymentClient _paymentClient = paymentClient ?? throw new ArgumentNullException(nameof(paymentClient));
+    private readonly GCPayOptions _options = optionsAccessor.Value;
 
-    public DepositProcessor(
-        GCPayClient gCPayClient,
-        IPaymentClient paymentClient,
-        IOptions<GCPayOptions> optionsAccessor)
+    public async ValueTask<DepositResponse> HandleAsync(
+        string subject,
+        DepositRequest data,
+        IEnumerable<MessageHeaderValue>? headerValues,
+        CancellationToken cancellationToken = default)
     {
-        _gCPayClient = gCPayClient ?? throw new ArgumentNullException(nameof(gCPayClient));
-        _paymentClient = paymentClient ?? throw new ArgumentNullException(nameof(paymentClient));
-        _options = optionsAccessor.Value;
-    }
-
-    public async ValueTask<ReadOnlyMemory<byte>> HandleAsync(ReadOnlyMemory<byte> data, CancellationToken cancellationToken = default)
-    {
-        var request = DepositRequest.Parser.ParseFrom(data.Span);
-
         var settings = JsonSerializer.Deserialize<GCPayDepositSettings>(
-            request.ApplyInfo,
+            data.ApplyInfo,
             GCPayUtility.SerializerOptions)!;
 
         var order = new GCPayClientDepositOrder(
-            decimal.Parse(request.Amount),
+            decimal.Parse(data.Amount),
             settings.FormId,
             new Uri($"{_options.CallbackBaseUrl}/deposit/callback"),
-            settings.PayChannelId);        
+            settings.PayChannelId);
 
         var depositResponse = await _gCPayClient.DepositAsync(
             settings.CustomerId,
@@ -58,11 +53,9 @@ internal class DepositProcessor : IMessageProcessor
             DateTime.UtcNow.AddMinutes(31D),
             cancellationToken).ConfigureAwait(false);
 
-        var msg = new DepositResponse
+        return new DepositResponse
         {
             Result = JsonSerializer.Serialize(applyInfo, GCPayUtility.SerializerOptions)
         };
-
-        return msg.ToByteArray();
     }
 }

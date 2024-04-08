@@ -163,4 +163,22 @@ public class HasherTests
 
         Assert.Equal(expected, actual);
     }
+
+    [Fact]
+    public void 餘額查詢()
+    {
+        var key = "ffb6c6bb7b987417c47b37efdfcb240550f3d2e5a3772b4f57bcb8d2d0061312";
+        var dict = new Dictionary<string, string?>
+        {
+            ["pay_customer_id"] = "54579",            
+            ["pay_apply_date"] = "1712557374",
+        };
+        var expected = "77AE6AB053B07EB5A106621CF203A3B3";
+
+        var sut = new GCPayHasher(NullLogger<GCPayHasher>.Instance);
+
+        var actual = sut.ComputeHash(key, dict);
+
+        Assert.Equal(expected, actual);
+    }
 }
